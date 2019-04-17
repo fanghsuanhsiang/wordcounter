@@ -1,0 +1,298 @@
+<html>
+        <script>
+                //<![CDATA[
+                var BROWSER = {};
+                __GetBVar();
+                if (BROWSER.safari) { BROWSER.firefox = true; }
+                
+                function __GetBVar() {
+                    var types = { 'ie': 'msie', 'firefox': '', 'chrome': '', 'opera': '', 'safari': '', 'mozilla': '', 'webkit': '', 'maxthon': '', 'qq': 'qqbrowser' };
+                    var __ua = navigator.userAgent.toLowerCase();
+                    var other = 1, ver = 0;
+                    if(BROWSER.opera){
+                        ver = opera.version();
+                        BROWSER.opera = ver;
+                        BROWSER.name = "opera";
+                        BROWSER.ver = parseFloat(ver);
+                    }
+                    else{
+                        BROWSER.opera = 0;
+                    }
+                    for (i in types) {
+                        var v = types[i] ? types[i] : i;
+                        if (__ua.indexOf(v) != -1) {
+                            var re = new RegExp(v + '(\\/|\\s)([\\d\\.]+)', 'ig');
+                            var matches = re.exec(__ua);
+                            ver = matches != null ? matches[2] : 0;
+                            other = ver !== 0 && v != 'mozilla' ? 0 : other;
+                            if(!BROWSER.name){
+                                BROWSER.name = i;
+                                BROWSER.ver = parseFloat(ver);
+                            }
+                        }
+                        else {
+                            ver = 0;
+                        }
+                        eval('BROWSER.' + i + '= ver');
+                    }
+                    BROWSER.other = other;
+                }
+                
+                // function $(name){ return document.getElementById(name); }
+                // function $set(name, val){ document.getElementById(name).innerHTML = val; }
+                
+                function Statistics(){
+                    // var str = $('id_content').value.replace(/\r\n/g, "\n"); //換行字元
+                    var str_value = document.getElementById('id_content'); //換行字元
+                    var str = str_value.value;
+                    var t_str = str.replace(/\n/g, ''); //空白字元
+                    var w_c_str = str.match(/[\u4e00-\u9fa5]/g)||[]; //中文
+                    var w_e_str = str.match(/\b\w+\b/g)||[]; //A-Za-z0-9_
+                    var w_n_str = str.match(/\b\d+\b/g)||[]; //0-9
+                    var e_p = t_str.match(/[|\~|\`|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\-|\_|\+|\=|\||\\|\[|\]|\{|\}|\;|\:|\"|\'|\,|\<|\.|\>|\/|\?]/g)||[]; //英文標點符號
+                    
+                    var sTotal = 0;
+                    for(var i = 0; i < t_str.length; i++){
+                        var c = t_str.charAt(i); //
+                        if (c.match(/[^\x00-\xff]/))sTotal ++; //ASCII不在0-255
+                    }
+                    
+                    var e = t_str.match(/[A-Za-z]/g)||[];
+                    var eTotal = e.length;
+                
+                    var n = t_str.match(/[0-9]/g)||[];
+                    var nTotal = n.length;
+                
+                    var part = 0;
+                    var s_ma = str.split("\n");
+                    for(var i = 0; i < s_ma.length; i++){
+                        if(s_ma[i].length > 0) part++;
+                    }
+                
+                    // $set('id_total', t_str.length); //總數
+                    // $set('id_c_total', w_c_str.length); //中文字數
+                    // $set('id_c_punctuation', sTotal - w_c_str.length); //中文標點符號
+                    // $set('id_e_total', eTotal); //英文字數
+                    // $set('id_e_punctuation', e_p.length); //英文標點符號
+                    // $set('id_e_words', w_e_str.length - w_n_str.length); //英文單字數
+                    // $set('id_n_total', nTotal); //數字
+                    // $set('id_part', part); //行數
+                    
+                    var id_total = document.getElementById('id_total'); //總數
+                    id_total.innerHTML = t_str.length;
+                    var id_c_total = document.getElementById('id_c_total'); //中文字數
+                    id_c_total.innerHTML = w_c_str.length;
+                    var id_c_punctuation = document.getElementById('id_c_punctuation'); //中文標點符號
+                    id_c_punctuation.innerHTML = sTotal - w_c_str.length;
+                    var id_e_total = document.getElementById('id_e_total'); //英文字數
+                    id_e_total.innerHTML = eTotal;
+                    var id_e_punctuation = document.getElementById('id_e_punctuation'); //英文標點符號
+                    id_e_punctuation.innerHTML = e_p.length;
+                    var id_e_words = document.getElementById('id_e_words'); //英文單字數
+                    id_e_words.innerHTML = t_str.length;
+                    var id_n_total_ = document.getElementById('id_n_total'); //數字
+                    id_n_total.innerHTML = nTotal;
+                    var id_part = document.getElementById('id_part'); //行數
+                    id_part.innerHTML = part;
+                }
+                function Clear_Content(){
+                    // $('id_content').value = "";
+                    id_cotent = document.getElementById('id_content');
+                  	id_content.value = "";
+                
+                    Statistics();
+                }
+                //]]>
+                </script>
+                </header>
+
+    <body>
+      	<div class="body">
+        <div class="background">
+            <div class="logo">
+                <img src="https://intl.rakuten-static.com/b/tw/assets/event/test/sean/wordcount/logo.png">
+            </div>
+            <div class="box">
+                <!-- <input type="text">
+                <img src="img/box.png"> -->
+                        <textarea id="id_content" oninput="Statistics();"></textarea>
+                       <input onclick="Clear_Content()" type="button" value="清除" class="tops"> 
+            </div>
+            <div class="result">
+                <div class="total">
+                    <img src="https://intl.rakuten-static.com/b/tw/assets/event/test/sean/wordcount/total.png">
+                    <strong>
+                    <span style="position:absolute; left:4%; top:30%;">總數：</span>
+                    &nbsp;    
+                    <span id="id_total" name="id_total" class="star" style="position:absolute; left:80px; top:30%;">0</span>
+                    </strong>
+                </div>
+                <br><br>
+                <div class="chinese">
+                    <img src="https://intl.rakuten-static.com/b/tw/assets/event/test/sean/wordcount/chinese_word.png">
+                    <strong>
+                    <span style="position:absolute; left:4%; top:15%">中文字數：</span>
+                    &nbsp;
+                    <span id="id_c_total" class="star" style="position:absolute; left:115px; top:15%;">0</span>
+                    </strong>
+                    <br><br>
+                    <div>
+                    <img src="https://intl.rakuten-static.com/b/tw/assets/event/test/sean/wordcount/chinese_symbol.png">
+                    <strong>
+                    <span style="position:absolute; left:4%; top:73%;">中文標點符號數： </span>
+                    &nbsp;
+                    <span id="id_c_punctuation" class="star" style="position:absolute; left:175px; top:73%;">0</span>
+                    </strong>
+                    </div>
+                </div>
+                <div class="english">
+                    <img src="https://intl.rakuten-static.com/b/tw/assets/event/test/sean/wordcount/alphabet.png">
+                    <strong>
+                    <span style="position:absolute; left:4%; top:7%;">英文字母數：</span>
+                    &nbsp;
+                    <span id="id_e_total" class="star" style="position:absolute; left:135px; top:7%;">0</span>
+                    </strong>
+                    <br><br>
+                    <div>
+                    <img src="https://intl.rakuten-static.com/b/tw/assets/event/test/sean/wordcount/letter.png">
+                    <strong>
+                    <span style="position:absolute; left:4%; top:45%;">英文單字數：</span>
+                    &nbsp;
+                    <span id="id_e_words" class="star" style="position:absolute; left:135px; top:45%;">0</span>
+                    </strong>
+                    </div>
+                    <br>
+                    <div>
+                    <img src="https://intl.rakuten-static.com/b/tw/assets/event/test/sean/wordcount/english_symbol.png">
+                    <strong>
+                    <span style="position:absolute; left:4%; top:82%;">英文標點符號數：</span>
+                    &nbsp;
+                    <span id="id_e_punctuation" class="star" style="position:absolute; left:175px; top:82%;">0</span>
+                    </strong>
+                    </div>
+                </div>
+                <div class="other">
+                    <img src="https://intl.rakuten-static.com/b/tw/assets/event/test/sean/wordcount/number.png">
+                    <strong>
+                    <span style="position:absolute; left:4%; top:15%;">數字總數：</span>
+                    &nbsp;
+                    <span id="id_n_total" class="star" style="position:absolute; left:115px; top:15%;">0</span>
+                    </strong>
+                    <br><br>
+                    <div>
+                    <img src="https://intl.rakuten-static.com/b/tw/assets/event/test/sean/wordcount/row.png">
+                    <strong>
+                    <span style="position:absolute; left:4%; top:73%;">行列數：</span>
+                    &nbsp;
+                    <span id="id_part" class="star" style="position:absolute; left:100px; top:73%;">0</span>
+                    </strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+      	</div>
+    </body>
+</html>
+
+<style>
+.body{
+  height: 875px;
+}
+.background{
+    background-image: url("https://intl.rakuten-static.com/b/tw/assets/event/test/sean/wordcount/bg.png");
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
+.logo img{
+    /* background-image: url("img/logo.png");
+    height: 100%;
+    background-repeat: no-repeat; */
+    height: auto;
+    max-width: 20%;
+    margin-left: 2%;
+    margin-top: 2%;
+}
+.box{
+    /* background-image: url("img/box.png");
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center; */
+    /* background: ghostwhite; */
+	box-shadow: 0 0 15px #ccc;
+	border-radius: 3px;
+	border: 2px solid black;
+    padding: 7px;
+    margin: 0 auto;
+    width: 50%;
+    overflow: hidden;
+}
+textarea {
+    padding: 0;
+    width: 100%;
+    box-sizing: border-box;
+    height: 285px;
+    border: 1px solid black;
+    /* background: #F5FFFA; */
+    overflow: auto;
+    border-radius: 2px;
+}
+.tops{
+    right: 0px;
+    margin-top: 5px;
+    height: 30px;
+    width: 65px;
+    float: right;
+    border-radius: 5px;
+    background-color: #757575;
+    color: white;
+  	padding: 7px 15px 7px 15px;
+}
+.result{
+    overflow: hidden;
+    margin-top: 30px;
+}
+.container{
+    /* float: left; */
+    /* background-color: chocolate; */
+}
+.total{
+    left: 45%;
+    position: relative;
+    font-size: 140%;
+    width: 20%;
+}
+.total img{
+    width: 15%;
+}
+.chinese{
+    margin-left: 20%;
+    position: relative;
+    font-size: 140%;
+    float: left;
+    width: 20%;
+}
+.chinese img{
+    width: 15%;
+}
+.english{
+    float: left;
+    margin-left: 5%;
+    position: relative;
+    font-size: 140%;
+    width: 20%;
+}
+.english img{
+    width: 15%;
+}
+.other{
+    margin-left: 5%;
+    position: relative;
+    font-size: 140%;
+    float: left;
+    width: 20%;
+}
+.other img{
+    width: 15%;
+}
+</style>
